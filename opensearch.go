@@ -19,8 +19,10 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/Delta456/box-cli-maker/v2"
 	opensearch "github.com/opensearch-project/opensearch-go/v2"
 	opensearchapi "github.com/opensearch-project/opensearch-go/v2/opensearchapi"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
 )
@@ -135,6 +137,7 @@ var URL = []string{"https://monweb01.msk.lukoil.net/os/"}
 
 var tpl bytes.Buffer
 
+var verbose = bool(false)
 var cfgHosts []ConfigHosts
 var cfgIgnoreMsg []LogsIgnore
 var cfgApp map[string]string
@@ -151,8 +154,8 @@ func InitConfig() {
 	// fmt.Println("==>>inside initConfig")
 	cfgHostNames = make(map[string]ConfigHosts)
 	cfgHostIP = make(map[string]ConfigHosts)
-	selGroups = strings.Split("")
-	selHosts = strings.Split('srt-hlf11')
+	selGroups = strings.Split("", ",")
+	selHosts = strings.Split("srt-hlf11", ",")
 	// log.Println("GROUPS: ", selGroups)
 	// fmt.Println("GROUPS: ", selGroups)
 	loadHostsInv()
@@ -167,11 +170,11 @@ func InitConfig() {
 	if desc {
 		cfgApp["desc"] = "desc"
 	}
-	runSearch(args)
+	RunSearch()
 
 }
 
-func RunSearch(args []string) {
+func RunSearch() {
 	if len(ipHosts) == 0 && viper.GetString("ipaddr") == "" {
 		log.Fatal("Need to select hosts, options -i, -g, -a")
 	}
